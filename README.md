@@ -36,7 +36,7 @@ https://github.com/rameshnarne/myretail_product_details.git
 Install the app in IDE as a Maven Project and Run the MyRetailProductDetailsApplication.java file.
 
 
-In Order to Validate from Rest Client, Please use below URL:
+In Order to Validate from Rest Client, Please use below URI:
 ----------------------------------------------------------------
 Update Product Details (PUT) - http://localhost:8090/product-details/products/13860428
 Sample JSON Request -
