@@ -15,6 +15,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.UnexpectedTypeException;
 import java.util.List;
 import java.util.Set;
+import java.util.StringJoiner;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -40,11 +41,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity handleConstraintViolation(ConstraintViolationException exception) {
         Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();
-        StringBuilder strBuilder = new StringBuilder();
+        StringJoiner joiner = new StringJoiner(", ");
         for (ConstraintViolation<?> violation : violations ) {
-            strBuilder.append(violation.getMessage() + " ");
+            joiner.add(violation.getMessage());
         }
-        Error error = new Error(HttpStatus.BAD_REQUEST.name(), strBuilder.toString());
+        Error error = new Error(HttpStatus.BAD_REQUEST.name(), joiner.toString());
         return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -81,11 +82,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
-        StringBuilder strBuilder = new StringBuilder();
+        StringJoiner joiner = new StringJoiner(", ");
         for(FieldError fieldError : fieldErrors) {
-            strBuilder.append(fieldError.getDefaultMessage() + " ");
+            joiner.add(fieldError.getDefaultMessage());
         }
-        Error error = new Error(HttpStatus.BAD_REQUEST.name(), strBuilder.toString());
+        Error error = new Error(HttpStatus.BAD_REQUEST.name(), joiner.toString());
         return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
     }
 
