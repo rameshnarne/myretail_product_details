@@ -1,6 +1,8 @@
 package com.myretail.products.service.impl;
 
 import com.myretail.products.data.IRedisDataClient;
+import com.myretail.products.data.RedisKey;
+import com.myretail.products.exceptions.ApiServiceException;
 import com.myretail.products.helper.CommonHelper;
 import com.myretail.products.model.PriceDetails;
 import com.myretail.products.model.ProductDetailsResponse;
@@ -22,6 +24,13 @@ public class UpdateProductDetailsService implements IUpdateProductDetailsService
     @Autowired
     private CommonHelper commonHelper;
 
+    /**
+     * UpdateProductDetails service helps to update the Product details in Redis based on productId and Request
+     * @param productId
+     * @param priceRequest
+     * @throws RuntimeException
+     * @return ProductDetailsResponse
+     */
     @Override
     public void updateProductDetails(String productId, ProductPriceRequest priceRequest) {
         ProductDetailsResponse productDetails = retrieveProductDetails.retrieveProductDetails(productId);
@@ -29,7 +38,7 @@ public class UpdateProductDetailsService implements IUpdateProductDetailsService
         priceDetails.setValue(priceRequest.getValue());
         priceDetails.setCurrencyCode(priceRequest.getCurrencyCode());
         productDetails.setPriceDetails(priceDetails);
-        redisDataClient.saveValue(productId, commonHelper.convertObjectToString(productDetails));
+        redisDataClient.saveValue(RedisKey.PRODUCT_DATA_ + productId, commonHelper.convertObjectToString(productDetails));
     }
 
 }

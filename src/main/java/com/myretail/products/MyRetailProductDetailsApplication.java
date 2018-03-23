@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
@@ -19,13 +20,13 @@ public class MyRetailProductDetailsApplication {
 	}
 
 	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
+	public CommonHelper commonHelper() {
+		return new CommonHelper();
 	}
 
 	@Bean
-	public CommonHelper commonHelper() {
-		return new CommonHelper();
+	public MethodValidationPostProcessor methodValidationPostProcessor() {
+		return new MethodValidationPostProcessor();
 	}
 
 }
