@@ -1,9 +1,9 @@
 package com.myretail.products.service;
 
-import com.myretail.products.model.ProductDetailsResponse;
+import com.myretail.products.model.ProductPriceRequest;
 
 @FunctionalInterface
 public interface IUpdateProductDetailsService {
 
-    void updateProductDetails(ProductDetailsResponse productDetailsResponse);
+    void updateProductDetails(String productId, ProductPriceRequest priceRequest);
 }

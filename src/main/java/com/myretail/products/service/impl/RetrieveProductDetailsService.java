@@ -1,14 +1,16 @@
 package com.myretail.products.service.impl;
 
-import com.myretail.products.entity.ProductDetailsEntity;
-import com.myretail.products.model.PriceDetails;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.myretail.products.constants.ProductDetailsConstants;
+import com.myretail.products.data.IRedisDataClient;
+import com.myretail.products.exceptions.ApiServiceException;
+import com.myretail.products.exceptions.ErrorCodeKeys;
 import com.myretail.products.model.ProductDetailsResponse;
-import com.myretail.products.repository.IProductDetailsRepository;
 import com.myretail.products.service.IRetrieveProductDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.util.StringUtils;
 
 @Service
 public class RetrieveProductDetailsService implements IRetrieveProductDetailsService {
@@ -17,22 +19,18 @@ public class RetrieveProductDetailsService implements IRetrieveProductDetailsSer
     private ProductNameService productNameService;
 
     @Autowired
-    private IProductDetailsRepository productDetailsRepository;
+    private IRedisDataClient redisDataClient;
 
     @Override
     public ProductDetailsResponse retrieveProductDetails(String productId) {
-
-        Optional<ProductDetailsEntity> productDetailsEntity = productDetailsRepository.findById(productId);
-        ProductDetailsResponse productDetailsResponse = new ProductDetailsResponse();
-        if(productDetailsEntity.isPresent()){
-            String productName = productNameService.getProductName(productId);
-            productDetailsResponse.setId(productDetailsEntity.get().getId());
-            productDetailsResponse.setName(productName);
-            PriceDetails priceDetails = new PriceDetails();
-            priceDetails.setCurrencyCode(productDetailsEntity.get().getPriceDetailsEntity().getCurrencyCode());
-            priceDetails.setValue(productDetailsEntity.get().getPriceDetailsEntity().getValue());
-            productDetailsResponse.setPriceDetails(priceDetails);
+        String jsonValue = redisDataClient.getValue(productId);
+        if(StringUtils.isEmpty(jsonValue)) {
+            throw new ApiServiceException(ProductDetailsConstants.PRODUCT_NOT_AVAILABLE,
+                    ErrorCodeKeys.INVALID_PRODUCT_ID.name(), HttpStatus.NOT_FOUND);
         }
-        return productDetailsResponse;
+        ProductDetailsResponse response = null;
+        response = new ObjectMapper().convertValue(jsonValue, ProductDetailsResponse.class);
+        return response;
     }
+
 }

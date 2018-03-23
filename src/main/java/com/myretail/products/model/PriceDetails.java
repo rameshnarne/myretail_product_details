@@ -8,9 +8,8 @@ import java.io.Serializable;
 @Setter
 @Getter
 public class PriceDetails implements Serializable{
+   private static final long serialVersionUID = -5234280476066339720L;
 
-    private static final long serialVersionUID = -5234280476066339720L;
-
-    private double value;
-    private String currencyCode;
+   private double value;
+   private String currencyCode;
 }
